@@ -235,9 +235,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50224</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50225/Search/Index</IISUrl>
-          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://localhost:50225/Search/Index</IISAppRootUrl>
+          <IISUrl>http://localhost:50227</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
