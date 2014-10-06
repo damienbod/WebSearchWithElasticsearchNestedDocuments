@@ -21,13 +21,16 @@
 
 @section scripts
 {
+    <link href="~/Scripts/jtable/themes/jqueryui/jtable_jqueryui.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jtable/jquery.jtable.min.js"></script>
+    <script src="~/Scripts/moment.min.js"></script>
     <script type="text/javascript">
-        var items;
-        $(document).ready(function() {
+
+        $(document).ready(function () {
             $("input#autocomplete").autocomplete({
                 source: function(request, response) {
                     $.ajax({
-                        url: "http://localhost:50225/Search/search",
+                        url: "http://localhost:50227/Search/search",
                         dataType: "json",
                         data: {
                             term: request.term,
@@ -37,7 +40,7 @@
                             for (i = 0; i < data.length; i++) {
                                 itemArray[i] = { label: data[i].Name, value: data[i].Name, data: data[i] }
                             }
- 
+
                             console.log(itemArray);
                             response(itemArray);
                         },
@@ -46,7 +49,7 @@
                         }
                     });
                 },
-                select: function (event, ui) {
+                select: function(event, ui) {
                     $("#spanupdateId").text(ui.item.data.Id);
                     $("#spanupdateCreated").text(new Date(parseInt(ui.item.data.Created.substr(6))));
                     $("#spanupdateUpdated").text(new Date(parseInt(ui.item.data.Updated.substr(6))));
@@ -55,6 +58,82 @@
                     $("#updateDescription").text(ui.item.data.Description);
                     $("#updateName").val(ui.item.data.Name);
                     $("#updateDescription").val(ui.item.data.Description);
+
+
+                    $('#updatetableskilldetails').jtable({
+                        title: 'Skill Details',
+                        paging: false,
+                        pageSize: 5,
+                        sorting: true,
+                        multiSorting: true,
+                        defaultSorting: 'Name asc',
+                        actions: {
+                            listAction: function(postData) {
+                                console.log("Loading from custom function...");
+                                return {
+                                    "Result": "OK",
+                                    "Records": ui.item.data.SkillDetails
+                                };
+                            },
+
+                            //deleteAction: deleteItem,
+                            createAction: function(postData) {
+                                console.log("Creating...");
+                                getAllRowsOfjTableUpdateSkillDetailsList();
+                                var data = getQueryParams(postData);
+                                return {
+                                    "Result": "OK",
+                                    "Record": { "Id": data["Id"], "SkillLevel": data["SkillLevel"], "Details": data["Details"], "Created": "/Date(1412577196489)/", "Updated": "/Date(1412577196489)/" }
+                                }
+                            },
+                            updateAction: function(postData) {
+                                console.log("Updating...");
+                                console.log(postData.Id);
+                                
+                                alert(JSON.stringify(data));
+                                return {
+                                    "Result": "OK",
+                                };
+                            }
+                        },
+                        fields: {
+                            Id: {
+                                key: true,
+                                create: true,
+                                edit: true,
+                                list: true
+                            },
+                            SkillLevel: {
+                                title: 'SkillLevel',
+                                width: '20%'
+                            },
+                            Details: {
+                                title: 'Details',
+                                width: '30%'
+                            },
+                            Created: {
+                                title: 'Created',
+                                edit: false,
+                                create: false,
+                                width: '20%',
+                                display: function (data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                            },
+                            Updated: {
+                                title: 'Updated',
+                                edit: false,
+                                create: false,
+                                width: '20%',
+                                display: function (data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                            }
+                        }
+                    });
+
+                    $('#updatetableskilldetails').jtable('load');
+                    $.each(ui.item.data.SkillDetails, function() {
+                        var skilldetail = this;
+
+                    });
+
 
                     $("#updateId").val(ui.item.data.Id);
                     $("#updateCreated").val(ui.item.data.Created);
@@ -67,8 +146,56 @@
                     console.log(ui.item);
                 }
             });
-
         });
+
+
+        function getQueryParams(qs) {
+            qs = qs.split("+").join(" ");
+
+            var params = {},
+                tokens,
+                re = /[?&]?([^=]+)=([^&]*)/g;
+
+            while (tokens = re.exec(qs)) {
+                params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+            }
+
+            return params;
+        }
+
+        function getAllRowsOfjTableUpdateSkillDetailsList() {
+            var $rows = $('#updatetableskilldetails').find('.jtable-data-row');
+            var data = [];
+            $.each($rows, function() {
+                var id = $(this).attr('data-record-key');
+                
+                var idData = {};
+                idData["Id"] = id;
+                data.push(idData);
+
+                var rowData = {};
+                for (var j = 0; j < $rows.cells.length; j++) {
+                    rowData[headers[j]] = $rows.cells[j].innerHTML;
+                    } data.push(rowData);
+            });
+
+            $("#updateSkillDetailsList").val(data);
+        }
+
+        //function tableToJson(table) {
+        //    var data = []; // first row needs to be headers var headers = [];
+        //    for (var i = 0; i < table.rows[0].cells.length; i++) {
+        //        headers[i] = table.rows[0].cells[i].innerHTML.toLowerCase().replace(/ /gi, '');
+        //    }
+        //    // go through cells
+        //    for (var i = 1; i < table.rows.length; i++) {
+        //        var tableRow = table.rows[i]; var rowData = {};
+        //        for (var j = 0; j < tableRow.cells.length; j++) {
+        //            rowData[headers[j]] = tableRow.cells[j].innerHTML;
+        //        } data.push(rowData);
+        //    }
+        //    return data;
+        //}
 
     </script>
 }
@@ -77,7 +204,7 @@
 <form name="input" action="update" method="post">
     <fieldset class="form">
         <legend>UPDATE an existing document in the search engine</legend>
-        <table width="500">
+        <table width="800">
             <tr>
                 <th></th>
                 <th></th>
@@ -126,9 +253,15 @@
                 </td>
             </tr>
             <tr>
+                <td colspan="2">
+                    <div id="updatetableskilldetails" />
+                    <input id="updateSkillDetailsList" name="updateSkillDetailsList" type="hidden" />
+                </td>
+            </tr>
+            <tr>
                 <td>
                     <br />
-                    <input type="submit" value="Update Skill" style="width: 200px" />
+                    <input id="updateSumbit" type="submit" value="Update Skill" style="width: 200px" />
                 </td>
                 <td></td>
             </tr>
