@@ -28,7 +28,7 @@
 
         $(document).ready(function () {
 
-            var updateResults;
+            var updateResults = [];
             $("input#autocomplete").autocomplete({
                 source: function(request, response) {
                     $.ajax({
@@ -60,7 +60,10 @@
                     $("#updateName").val(ui.item.data.Name);
                     $("#updateDescription").val(ui.item.data.Description);
 
-                    updateResults = ui.item.data.SkillDetails;
+                    if (ui.item.data.SkillDetails) {
+                        updateResults = ui.item.data.SkillDetails;
+                    }
+                    
                     $('#updatetableskilldetails').jtable('load');
 
                     $("#updateId").val(ui.item.data.Id);
@@ -132,7 +135,7 @@
                         edit: false,
                         create: false,
                         width: '20%',
-                        display: function (data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                        display: function (data) { return moment(data.record.Updated).format('DD/MM/YYYY HH:mm:ss'); }
                     }
                 }
             });
@@ -187,7 +190,7 @@
                         edit: false,
                         create: false,
                         width: '20%',
-                        display: function(data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                        display: function(data) { return moment(data.record.Updated).format('DD/MM/YYYY HH:mm:ss'); }
                     }
                 }
             });      
@@ -226,7 +229,7 @@
         }
 
         function getAllRowsOfjTableCreateSkillDetailsList() {
-            var $rows = $('#updatetableskilldetails').find('.jtable-data-row');
+            var $rows = $('#createtableskilldetails').find('.jtable-data-row');
             var headers = ["Id", "SkillLevel", "Details", "Created", "Updated"];
 
             var data = [];

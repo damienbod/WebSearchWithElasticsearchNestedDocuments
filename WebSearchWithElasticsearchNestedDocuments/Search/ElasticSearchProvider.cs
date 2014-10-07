@@ -10,16 +10,16 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 		private const string ConnectionString = "http://localhost:9200/";
 		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 
+		private static readonly Uri Node = new Uri(ConnectionString);
+		private static readonly ConnectionSettings Settings = new ConnectionSettings(Node, defaultIndex: "skillwithlistofdetailss");
+		readonly ElasticClient _client = new ElasticClient(Settings);
+
 		public IEnumerable<SkillWithListOfDetails> QueryString(string term)
 		{
-			var node = new Uri("http://localhost:9200");
-			var settings = new ConnectionSettings(node, defaultIndex: "skillwithlistofdetailss");
-			var client = new ElasticClient(settings);
-
 			if (term != null)
 			{
 				var names = term.Replace("+", " OR *");
-				var searchResults = client.Search<SkillWithListOfDetails>(s => s
+				var searchResults = _client.Search<SkillWithListOfDetails>(s => s
 					.From(0)
 					.Size(10)
 					.Query(q => q.QueryString(f => f.Query(names + "*")))
@@ -28,7 +28,7 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 				return searchResults.Documents;
 			}
 
-			var defaultResults = client.Search<SkillWithListOfDetails>(s => s
+			var defaultResults = _client.Search<SkillWithListOfDetails>(s => s
 					.From(0)
 					.Size(10)
 					.Query(q => q.QueryString(f => f.Query("*")))
@@ -55,6 +55,12 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 				skill.Name = updateName;
 				skill.Description = updateDescription;
 				skill.SkillDetails = updateSkillDetailsList;
+
+				foreach (var item in skill.SkillDetails)
+				{
+					item.Updated = DateTime.UtcNow;
+				}
+
 				context.AddUpdateEntity(skill, skill.Id);
 				context.SaveChanges();
 			}
