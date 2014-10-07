@@ -26,7 +26,9 @@
     <script src="~/Scripts/moment.min.js"></script>
     <script type="text/javascript">
 
-        $(document).ready(function() {
+        $(document).ready(function () {
+
+            var updateResults;
             $("input#autocomplete").autocomplete({
                 source: function(request, response) {
                     $.ajax({
@@ -58,67 +60,7 @@
                     $("#updateName").val(ui.item.data.Name);
                     $("#updateDescription").val(ui.item.data.Description);
 
-                    $('#updatetableskilldetails').jtable({
-                        title: 'Skill Details',
-                        paging: false,
-                        pageSize: 5,
-                        sorting: true,
-                        multiSorting: true,
-                        defaultSorting: 'Name asc',
-                        actions: {
-                            listAction: function(postData) {
-                                console.log("Loading from custom function...");
-                                return {
-                                    "Result": "OK",
-                                    "Records": ui.item.data.SkillDetails
-                                };
-                            },
-
-                            //deleteAction: deleteItem,
-                            createAction: function(postData) {
-                                var data = getQueryParams(postData);
-                                return {
-                                    "Result": "OK",
-                                    "Record": { "Id": data["Id"], "SkillLevel": data["SkillLevel"], "Details": data["Details"], "Created": data["Created"], "Updated": moment() }
-                                }
-                            },
-                            updateAction: function(postData) {
-                                return {
-                                    "Result": "OK",
-                                };
-                            }
-                        },
-                        fields: {
-                            Id: {
-                                key: true,
-                                create: true,
-                                edit: true,
-                                list: true
-                            },
-                            SkillLevel: {
-                                title: 'SkillLevel',
-                                width: '20%'
-                            },
-                            Details: {
-                                title: 'Details',
-                                width: '30%'
-                            },
-                            Created: {
-                                title: 'Created',
-                                edit: false,
-                                create: false,
-                                width: '20%',
-                                display: function(data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
-                            },
-                            Updated: {
-                                title: 'Updated',
-                                edit: false,
-                                create: false,
-                                width: '20%',
-                                display: function(data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
-                            }
-                        }
-                    });
+                    updateResults = ui.item.data.SkillDetails;
                     $('#updatetableskilldetails').jtable('load');
 
                     $("#updateId").val(ui.item.data.Id);
@@ -133,6 +75,68 @@
                 }
             });
        
+            $('#updatetableskilldetails').jtable({
+                title: 'Skill Details',
+                paging: false,
+                pageSize: 5,
+                sorting: true,
+                multiSorting: true,
+                defaultSorting: 'Name asc',
+                actions: {
+                    listAction: function (postData) {
+                        console.log("Loading from custom function...");
+                        return {
+                            "Result": "OK",
+                            "Records": updateResults 
+                        };
+                    },
+
+                    //deleteAction: deleteItem,
+                    createAction: function (postData) {
+                        var data = getQueryParams(postData);
+                        return {
+                            "Result": "OK",
+                            "Record": { "Id": data["Id"], "SkillLevel": data["SkillLevel"], "Details": data["Details"], "Created": data["Created"], "Updated": moment() }
+                        }
+                    },
+                    updateAction: function (postData) {
+                        return {
+                            "Result": "OK",
+                        };
+                    }
+                },
+                fields: {
+                    Id: {
+                        key: true,
+                        create: true,
+                        edit: true,
+                        list: true
+                    },
+                    SkillLevel: {
+                        title: 'SkillLevel',
+                        width: '20%'
+                    },
+                    Details: {
+                        title: 'Details',
+                        width: '30%'
+                    },
+                    Created: {
+                        title: 'Created',
+                        edit: false,
+                        create: false,
+                        width: '20%',
+                        display: function (data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                    },
+                    Updated: {
+                        title: 'Updated',
+                        edit: false,
+                        create: false,
+                        width: '20%',
+                        display: function (data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                    }
+                }
+            });
+
             $('#createtableskilldetails').jtable({
                 title: 'Skill Details',
                 paging: false,
@@ -209,10 +213,6 @@
 
             var data = [];
             $.each($rows, function() {
-                var id = $(this).attr('data-record-key');
-                //console.log(this.innerHTML);
-                //console.log($(this));
-
                 var rowData = {};
                 for (var j = 0; j < 5; j++) {
                     console.log(headers[j] + ":" +  this.cells[j].innerHTML);
@@ -225,16 +225,31 @@
             $("#updateSkillDetailsList").val(JSON.stringify(data));
         }
 
-        function SumbitUpdateForm() {
-            // alert("Yes SumbitUpdateForm");
+        function getAllRowsOfjTableCreateSkillDetailsList() {
+            var $rows = $('#updatetableskilldetails').find('.jtable-data-row');
+            var headers = ["Id", "SkillLevel", "Details", "Created", "Updated"];
 
+            var data = [];
+            $.each($rows, function () {
+                var rowData = {};
+                for (var j = 0; j < 5; j++) {
+                    console.log(headers[j] + ":" + this.cells[j].innerHTML);
+
+                    rowData[headers[j]] = this.cells[j].innerHTML;
+                }
+                data.push(rowData);
+            });
+
+            $("#createSkillDetailsList").val(JSON.stringify(data));
+        }
+
+        function SumbitUpdateForm() {
             getAllRowsOfjTableUpdateSkillDetailsList();
             $("#updateForm form").submit();
         }
 
         function SumbitCreateForm() {
-            alert("Yes SumbitCreateForm");
-            // TODO get all items from table and sumbit
+            getAllRowsOfjTableCreateSkillDetailsList();
             $("#createForm form").submit();
         }
 
