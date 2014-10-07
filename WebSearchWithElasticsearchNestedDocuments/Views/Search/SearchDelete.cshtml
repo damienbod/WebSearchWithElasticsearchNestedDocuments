@@ -1,0 +1,30 @@
+﻿@model WebSearchWithElasticsearchNestedDocuments.Search.SkillWithListOfDetails
+
+<form name="input" action="delete" method="post">
+    <fieldset class="form">
+        <legend>DELETE an existing document in the search engine</legend>
+        <table width="500">
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>
+                    <span id="deleteName">-</span>
+                </td>
+                <td>
+                    <span id="spandeleteId">-</span>
+                    <input id="deleteId" name="deleteId" type="hidden" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <br />
+                    <input type="submit" value="Delete Skill" style="width: 200px" />
+                </td>
+                <td></td>
+            </tr>
+        </table>
+    </fieldset>
+</form>

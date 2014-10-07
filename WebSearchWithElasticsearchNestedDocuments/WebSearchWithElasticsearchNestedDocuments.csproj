@@ -346,6 +346,9 @@
     <Content Include="Scripts\jtable\themes\jtable_theme_base.less" />
     <Content Include="Scripts\jtable\themes\jqueryui\jtable_jqueryui.less" />
     <Content Include="Scripts\jtable\themes\basic\jtable_basic.less" />
+    <Content Include="Views\Search\SearchUpdate.cshtml" />
+    <Content Include="Views\Search\SearchDelete.cshtml" />
+    <Content Include="Views\Search\SearchCreate.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

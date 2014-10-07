@@ -1,0 +1,70 @@
+﻿@model WebSearchWithElasticsearchNestedDocuments.Search.SkillWithListOfDetails
+<div id="updateForm">
+    <form action="update" method="post">
+        <fieldset class="form">
+            <legend>UPDATE an existing document in the search engine</legend>
+            <table width="800">
+                <tr>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Id:</span>
+                    </td>
+                    <td>
+                        <span id="spanupdateId">-</span>
+                        <input id="updateId" name="updateId" type="hidden" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Name:</span>
+                    </td>
+                    <td>
+                        <input id="updateName" name="updateName" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Description:</span>
+                    </td>
+                    <td>
+                        <input id="updateDescription" name="updateDescription" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Created:</span>
+                    </td>
+                    <td>
+                        <span id="spanupdateCreated">-</span>
+                        <input id="updateCreated" name="updateCreated" type="hidden" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Updated:</span>
+                    </td>
+                    <td>
+                        <span id="spanupdateUpdated">-</span>
+                        <input id="updateUpdated" name="updateUpdated" type="hidden" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="updatetableskilldetails" />
+                        <input id="updateSkillDetailsList" name="updateSkillDetailsList" type="hidden" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <br />
+                        <input id="updateSumbit" type="button" onclick="SumbitUpdateForm()" value="Update Skill" style="width: 200px" />
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+</div>

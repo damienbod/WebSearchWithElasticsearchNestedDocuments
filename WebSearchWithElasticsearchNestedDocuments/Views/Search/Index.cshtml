@@ -26,7 +26,7 @@
     <script src="~/Scripts/moment.min.js"></script>
     <script type="text/javascript">
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             $("input#autocomplete").autocomplete({
                 source: function(request, response) {
                     $.ajax({
@@ -51,14 +51,12 @@
                 },
                 select: function(event, ui) {
                     $("#spanupdateId").text(ui.item.data.Id);
-                    $("#spanupdateCreated").text(new Date(parseInt(ui.item.data.Created.substr(6))));
-                    $("#spanupdateUpdated").text(new Date(parseInt(ui.item.data.Updated.substr(6))));
-
+                    $("#spanupdateCreated").text(moment(ui.item.data.Created).format('DD/MM/YYYY HH:mm:ss'));
+                    $("#spanupdateUpdated").text(moment(ui.item.data.Updated).format('DD/MM/YYYY HH:mm:ss'));
                     $("#updateName").text(ui.item.data.Name);
                     $("#updateDescription").text(ui.item.data.Description);
                     $("#updateName").val(ui.item.data.Name);
                     $("#updateDescription").val(ui.item.data.Description);
-
 
                     $('#updatetableskilldetails').jtable({
                         title: 'Skill Details',
@@ -78,19 +76,13 @@
 
                             //deleteAction: deleteItem,
                             createAction: function(postData) {
-                                console.log("Creating...");
-                                getAllRowsOfjTableUpdateSkillDetailsList();
                                 var data = getQueryParams(postData);
                                 return {
                                     "Result": "OK",
-                                    "Record": { "Id": data["Id"], "SkillLevel": data["SkillLevel"], "Details": data["Details"], "Created": "/Date(1412577196489)/", "Updated": "/Date(1412577196489)/" }
+                                    "Record": { "Id": data["Id"], "SkillLevel": data["SkillLevel"], "Details": data["Details"], "Created": data["Created"], "Updated": moment() }
                                 }
                             },
                             updateAction: function(postData) {
-                                console.log("Updating...");
-                                console.log(postData.Id);
-                                
-                                alert(JSON.stringify(data));
                                 return {
                                     "Result": "OK",
                                 };
@@ -116,24 +108,18 @@
                                 edit: false,
                                 create: false,
                                 width: '20%',
-                                display: function (data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                                display: function(data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
                             },
                             Updated: {
                                 title: 'Updated',
                                 edit: false,
                                 create: false,
                                 width: '20%',
-                                display: function (data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                                display: function(data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
                             }
                         }
                     });
-
                     $('#updatetableskilldetails').jtable('load');
-                    $.each(ui.item.data.SkillDetails, function() {
-                        var skilldetail = this;
-
-                    });
-
 
                     $("#updateId").val(ui.item.data.Id);
                     $("#updateCreated").val(ui.item.data.Created);
@@ -146,8 +132,62 @@
                     console.log(ui.item);
                 }
             });
-        });
+       
+            $('#createtableskilldetails').jtable({
+                title: 'Skill Details',
+                paging: false,
+                pageSize: 5,
+                sorting: true,
+                multiSorting: true,
+                defaultSorting: 'Name asc',
+                actions: {
 
+                    //deleteAction: deleteItem,
+                    createAction: function(postData) {
+                        var data = getQueryParams(postData);
+                        return {
+                            "Result": "OK",
+                            "Record": { "Id": data["Id"], "SkillLevel": data["SkillLevel"], "Details": data["Details"], "Created": moment(), "Updated": moment() }
+                        }
+                    },
+                    updateAction: function(postData) {
+                        return {
+                            "Result": "OK",
+                        };
+                    }
+                },
+                fields: {
+                    Id: {
+                        key: true,
+                        create: true,
+                        edit: true,
+                        list: true
+                    },
+                    SkillLevel: {
+                        title: 'SkillLevel',
+                        width: '20%'
+                    },
+                    Details: {
+                        title: 'Details',
+                        width: '30%'
+                    },
+                    Created: {
+                        title: 'Created',
+                        edit: false,
+                        create: false,
+                        width: '20%',
+                        display: function(data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                    },
+                    Updated: {
+                        title: 'Updated',
+                        edit: false,
+                        create: false,
+                        width: '20%',
+                        display: function(data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                    }
+                }
+            });      
+        }); // End of document ready
 
         function getQueryParams(qs) {
             qs = qs.split("+").join(" ");
@@ -165,184 +205,44 @@
 
         function getAllRowsOfjTableUpdateSkillDetailsList() {
             var $rows = $('#updatetableskilldetails').find('.jtable-data-row');
+            var headers = ["Id", "SkillLevel", "Details", "Created", "Updated"];
+
             var data = [];
             $.each($rows, function() {
                 var id = $(this).attr('data-record-key');
-                
-                var idData = {};
-                idData["Id"] = id;
-                data.push(idData);
+                //console.log(this.innerHTML);
+                //console.log($(this));
 
                 var rowData = {};
-                for (var j = 0; j < $rows.cells.length; j++) {
-                    rowData[headers[j]] = $rows.cells[j].innerHTML;
-                    } data.push(rowData);
+                for (var j = 0; j < 5; j++) {
+                    console.log(headers[j] + ":" +  this.cells[j].innerHTML);
+ 
+                    rowData[headers[j]] = this.cells[j].innerHTML;
+                }
+                data.push(rowData);
             });
 
-            $("#updateSkillDetailsList").val(data);
+            $("#updateSkillDetailsList").val(JSON.stringify(data));
         }
 
-        //function tableToJson(table) {
-        //    var data = []; // first row needs to be headers var headers = [];
-        //    for (var i = 0; i < table.rows[0].cells.length; i++) {
-        //        headers[i] = table.rows[0].cells[i].innerHTML.toLowerCase().replace(/ /gi, '');
-        //    }
-        //    // go through cells
-        //    for (var i = 1; i < table.rows.length; i++) {
-        //        var tableRow = table.rows[i]; var rowData = {};
-        //        for (var j = 0; j < tableRow.cells.length; j++) {
-        //            rowData[headers[j]] = tableRow.cells[j].innerHTML;
-        //        } data.push(rowData);
-        //    }
-        //    return data;
-        //}
+        function SumbitUpdateForm() {
+            // alert("Yes SumbitUpdateForm");
+
+            getAllRowsOfjTableUpdateSkillDetailsList();
+            $("#updateForm form").submit();
+        }
+
+        function SumbitCreateForm() {
+            alert("Yes SumbitCreateForm");
+            // TODO get all items from table and sumbit
+            $("#createForm form").submit();
+        }
 
     </script>
 }
 
+@Html.Partial("SearchUpdate")
 
-<form name="input" action="update" method="post">
-    <fieldset class="form">
-        <legend>UPDATE an existing document in the search engine</legend>
-        <table width="800">
-            <tr>
-                <th></th>
-                <th></th>
-            </tr>
-            <tr>
-                <td>
-                    <span>Id:</span>
-                </td>
-                <td>
-                    <span id="spanupdateId">-</span>
-                    <input id="updateId" name="updateId" type="hidden" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span>Name:</span>
-                </td>
-                <td>
-                    <input id="updateName" name="updateName" type="text" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span>Description:</span>
-                </td>
-                <td>
-                    <input id="updateDescription" name="updateDescription" type="text" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span>Created:</span>
-                </td>
-                <td>
-                    <span id="spanupdateCreated">-</span>
-                    <input id="updateCreated" name="updateCreated" type="hidden" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span>Updated:</span>
-                </td>
-                <td>
-                    <span id="spanupdateUpdated">-</span>
-                    <input id="updateUpdated" name="updateUpdated" type="hidden" />
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <div id="updatetableskilldetails" />
-                    <input id="updateSkillDetailsList" name="updateSkillDetailsList" type="hidden" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <br />
-                    <input id="updateSumbit" type="submit" value="Update Skill" style="width: 200px" />
-                </td>
-                <td></td>
-            </tr>
-        </table>
-    </fieldset>
-</form>
+@Html.Partial("SearchDelete")
 
-<form name="input" action="delete" method="post">
-    <fieldset class="form">
-        <legend>DELETE an existing document in the search engine</legend>
-        <table width="500">
-            <tr>
-                <th></th>
-                <th></th>
-            </tr>
-            <tr>
-                <td>
-                    <span id="deleteName">-</span>
-                </td>
-                <td>
-                    <span id="spandeleteId">-</span>
-                    <input id="deleteId" name="deleteId" type="hidden" />
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <br />
-                    <input type="submit" value="Delete Skill" style="width: 200px" />
-                </td>
-                <td></td>
-            </tr>
-        </table>
-    </fieldset>
-</form>
-
-@using (Html.BeginForm("Index", "Search"))
-{
-    @Html.ValidationSummary(true)
-
-    <fieldset class="form">
-        <legend>CREATE a new document in the search engine</legend>
-        <table width="500">
-            <tr>
-                <th></th>
-                <th></th>
-            </tr>
-            <tr>
-                <td>
-                    @Html.Label("Id:")
-                </td>
-                <td>
-                    @Html.EditorFor(model => model.Id)
-                    @Html.ValidationMessageFor(model => model.Id)
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    @Html.Label("Name:")
-                </td>
-                <td>
-                    @Html.EditorFor(model => model.Name)
-                    @Html.ValidationMessageFor(model => model.Name)
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    @Html.Label("Description:")
-                </td>
-                <td>
-                    @Html.EditorFor(model => model.Description)
-                    @Html.ValidationMessageFor(model => model.Description)
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <br />
-                    <input type="submit" value="Add Skill" style="width:200px" />
-                </td>
-                <td></td>
-            </tr>
-        </table>
-    </fieldset>
-}
+@Html.Partial("SearchCreate")

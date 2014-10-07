@@ -46,7 +46,7 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 			}
 		}
 
-		public void UpdateSkill(long updateId, string updateName, string updateDescription)
+		public void UpdateSkill(long updateId, string updateName, string updateDescription, List<SkillDetail> updateSkillDetailsList)
 		{
 			using (var context = new ElasticSearchContext(ConnectionString, _elasticSearchMappingResolver))
 			{
@@ -54,6 +54,7 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 				skill.Updated = DateTime.UtcNow;
 				skill.Name = updateName;
 				skill.Description = updateDescription;
+				skill.SkillDetails = updateSkillDetailsList;
 				context.AddUpdateEntity(skill, skill.Id);
 				context.SaveChanges();
 			}

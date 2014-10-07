@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using WebSearchWithElasticsearchNestedDocuments.Search;
 
 namespace WebSearchWithElasticsearchNestedDocuments.Controllers
@@ -56,9 +57,14 @@ namespace WebSearchWithElasticsearchNestedDocuments.Controllers
 
 		[HttpPost]
 		[Route("Update")]
-		public ActionResult Update(long updateId, string updateName, string updateDescription)
+		public ActionResult Update(long updateId, string updateName, string updateDescription, string updateSkillDetailsList)
 		{
-			_searchProvider.UpdateSkill(updateId, updateName, updateDescription);
+			_searchProvider.UpdateSkill(
+				updateId,
+				updateName, updateDescription, 
+				JsonConvert.DeserializeObject(updateSkillDetailsList, typeof(List<SkillDetail>)) as List<SkillDetail>
+				);
+
 			return Redirect("Index");
 		}
 

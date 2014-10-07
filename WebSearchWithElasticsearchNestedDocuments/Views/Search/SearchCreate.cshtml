@@ -1,0 +1,58 @@
+﻿@model WebSearchWithElasticsearchNestedDocuments.Search.SkillWithListOfDetails
+<div id="createForm">
+    @using (Html.BeginForm("Index", "Search"))
+    {
+        @Html.ValidationSummary(true)
+
+        <fieldset class="form">
+            <legend>CREATE a new document in the search engine</legend>
+            <table width="800">
+                <tr>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Label("Id:")
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => model.Id)
+                        @Html.ValidationMessageFor(model => model.Id)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Label("Name:")
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => model.Name)
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Label("Description:")
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => model.Description)
+                        @Html.ValidationMessageFor(model => model.Description)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="createtableskilldetails" />
+                        <input id="updateSkillDetailsList" name="updateSkillDetailsList" type="hidden" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <br />
+                        <input type="button" onclick="SumbitCreateForm()" value="Add Skill" style="width:200px" />
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+        </fieldset>
+    }
+
+</div>
