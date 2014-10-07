@@ -20,33 +20,15 @@ namespace WebSearchWithElasticsearchNestedDocuments.Controllers
 
 		[HttpPost]
 		[Route("Index")]
-		public ActionResult Index(SkillWithListOfDetails model)
+		public ActionResult Index(SkillWithListOfDetails model, string createSkillDetailsList)
 		{
 			if (ModelState.IsValid)
 			{
 				model.Created = DateTime.UtcNow;
 				model.Updated = DateTime.UtcNow;
 
-				// TEST CODE To be removed
-				var skillDetailSeniorDepartment = new SkillDetail
-				{
-					Created = DateTime.UtcNow,
-					Updated = DateTime.UtcNow,
-					Id = 1,
-					Details = "This skill is required by all people in department X",
-					SkillLevel = "Senior"
-				};
-
-				var skillDetailCommunication = new SkillDetail
-				{
-					Created = DateTime.UtcNow,
-					Updated = DateTime.UtcNow,
-					Id = 1,
-					Details = "This skill is required by consultants",
-					SkillLevel = "Senior"
-				};
-				model.SkillDetails = new List<SkillDetail> {skillDetailSeniorDepartment, skillDetailCommunication};
-
+				model.SkillDetails =
+					JsonConvert.DeserializeObject(createSkillDetailsList, typeof(List<SkillDetail>)) as List<SkillDetail>;
 
 				_searchProvider.AddUpdateEntity(model);
 				return Redirect("Search/Index");

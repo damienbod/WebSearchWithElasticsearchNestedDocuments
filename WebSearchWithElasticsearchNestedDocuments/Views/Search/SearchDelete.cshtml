@@ -1,6 +1,6 @@
 ﻿@model WebSearchWithElasticsearchNestedDocuments.Search.SkillWithListOfDetails
 
-<form name="input" action="delete" method="post">
+<form name="input" action="http://localhost:50227/search/delete" method="post">
     <fieldset class="form">
         <legend>DELETE an existing document in the search engine</legend>
         <table width="500">
@@ -17,7 +17,6 @@
                     <input id="deleteId" name="deleteId" type="hidden" />
                 </td>
             </tr>
-
             <tr>
                 <td>
                     <br />
