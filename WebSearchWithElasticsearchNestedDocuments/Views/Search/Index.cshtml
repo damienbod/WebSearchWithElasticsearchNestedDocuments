@@ -93,8 +93,12 @@
                             "Records": updateResults 
                         };
                     },
-
-                    //deleteAction: deleteItem,
+                    deleteAction: function (postData) {
+                        console.log("delete action called for:" + JSON.stringify(postData));
+                        return {
+                            "Result": "OK"
+                        };
+                    },
                     createAction: function (postData) {
                         var data = getQueryParams(postData);
                         return {
@@ -148,8 +152,12 @@
                 multiSorting: true,
                 defaultSorting: 'Name asc',
                 actions: {
-
-                    //deleteAction: deleteItem,
+                    deleteAction: function (postData) {
+                        console.log("delete action called for:" + JSON.stringify(postData));
+                        return {
+                            "Result": "OK"
+                        };
+                    },
                     createAction: function(postData) {
                         var data = getQueryParams(postData);
                         return {
