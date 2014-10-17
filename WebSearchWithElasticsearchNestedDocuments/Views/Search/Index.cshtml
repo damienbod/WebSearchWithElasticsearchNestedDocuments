@@ -53,8 +53,8 @@
                 },
                 select: function(event, ui) {
                     $("#spanupdateId").text(ui.item.data.Id);
-                    $("#spanupdateCreated").text(moment(ui.item.data.Created).format('DD/MM/YYYY HH:mm:ss'));
-                    $("#spanupdateUpdated").text(moment(ui.item.data.Updated).format('DD/MM/YYYY HH:mm:ss'));
+                    $("#spanupdateCreated").text(moment(ui.item.data.Created).format('YYYY-MM-DDTHH:mm:ss'));
+                    $("#spanupdateUpdated").text(moment(ui.item.data.Updated).format('YYYY-MM-DDTHH:mm:ss'));
                     $("#updateName").text(ui.item.data.Name);
                     $("#updateDescription").text(ui.item.data.Description);
                     $("#updateName").val(ui.item.data.Name);
@@ -132,14 +132,14 @@
                         edit: false,
                         create: false,
                         width: '20%',
-                        display: function (data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                        display: function (data) { return moment(data.record.Created).format('YYYY-MM-DDTHH:mm:ss'); }
                     },
                     Updated: {
                         title: 'Updated',
                         edit: false,
                         create: false,
                         width: '20%',
-                        display: function (data) { return moment(data.record.Updated).format('DD/MM/YYYY HH:mm:ss'); }
+                        display: function (data) { return moment(data.record.Updated).format('YYYY-MM-DDTHH:mm:ss'); }
                     }
                 }
             });
@@ -191,14 +191,14 @@
                         edit: false,
                         create: false,
                         width: '20%',
-                        display: function(data) { return moment(data.record.Created).format('DD/MM/YYYY HH:mm:ss'); }
+                        display: function(data) { return moment(data.record.Created).format('YYYY-MM-DDTHH:mm:ss'); }
                     },
                     Updated: {
                         title: 'Updated',
                         edit: false,
                         create: false,
                         width: '20%',
-                        display: function(data) { return moment(data.record.Updated).format('DD/MM/YYYY HH:mm:ss'); }
+                        display: function(data) { return moment(data.record.Updated).format('YYYY-MM-DDTHH:mm:ss'); }
                     }
                 }
             });      
