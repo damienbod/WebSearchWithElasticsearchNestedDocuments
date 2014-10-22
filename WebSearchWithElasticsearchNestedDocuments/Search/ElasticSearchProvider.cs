@@ -41,7 +41,7 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 		{
 			using (var context = new ElasticSearchContext(ConnectionString, _elasticSearchMappingResolver))
 			{
-				context.AddUpdateEntity(skillWithListOfDetails, skillWithListOfDetails.Id);
+				context.AddUpdateDocument(skillWithListOfDetails, skillWithListOfDetails.Id);
 				context.SaveChanges();
 			}
 		}
@@ -50,7 +50,7 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 		{
 			using (var context = new ElasticSearchContext(ConnectionString, _elasticSearchMappingResolver))
 			{
-				var skill = context.GetEntity<SkillWithListOfDetails>(updateId);
+				var skill = context.GetDocument<SkillWithListOfDetails>(updateId);
 				skill.Updated = DateTime.UtcNow;
 				skill.Name = updateName;
 				skill.Description = updateDescription;
@@ -61,7 +61,7 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 					item.Updated = DateTime.UtcNow;
 				}
 
-				context.AddUpdateEntity(skill, skill.Id);
+				context.AddUpdateDocument(skill, skill.Id);
 				context.SaveChanges();
 			}
 		}
@@ -70,7 +70,7 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 		{
 			using (var context = new ElasticSearchContext(ConnectionString, _elasticSearchMappingResolver))
 			{
-				context.DeleteEntity<SkillWithListOfDetails>(deleteId);
+				context.DeleteDocument<SkillWithListOfDetails>(deleteId);
 				context.SaveChanges();
 			}
 		}
