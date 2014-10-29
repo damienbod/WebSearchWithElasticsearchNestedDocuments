@@ -8,7 +8,7 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 	public class ElasticSearchProvider : ISearchProvider
 	{
 		private const string ConnectionString = "http://localhost:9200/";
-		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
+		private readonly IElasticsearchMappingResolver _elasticSearchMappingResolver = new ElasticsearchMappingResolver();
 
 		private static readonly Uri Node = new Uri(ConnectionString);
 		private static readonly ConnectionSettings Settings = new ConnectionSettings(Node, defaultIndex: "skillwithlistofdetailss");
@@ -39,7 +39,7 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 
 		public void AddUpdateEntity(SkillWithListOfDetails skillWithListOfDetails)
 		{
-			using (var context = new ElasticSearchContext(ConnectionString, _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticSearchMappingResolver))
 			{
 				context.AddUpdateDocument(skillWithListOfDetails, skillWithListOfDetails.Id);
 				context.SaveChanges();
@@ -48,7 +48,7 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 
 		public void UpdateSkill(long updateId, string updateName, string updateDescription, List<SkillDetail> updateSkillDetailsList)
 		{
-			using (var context = new ElasticSearchContext(ConnectionString, _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticSearchMappingResolver))
 			{
 				var skill = context.GetDocument<SkillWithListOfDetails>(updateId);
 				skill.Updated = DateTime.UtcNow;
@@ -68,7 +68,7 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 
 		public void DeleteSkill(long deleteId)
 		{
-			using (var context = new ElasticSearchContext(ConnectionString, _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticSearchMappingResolver))
 			{
 				context.DeleteDocument<SkillWithListOfDetails>(deleteId);
 				context.SaveChanges();
