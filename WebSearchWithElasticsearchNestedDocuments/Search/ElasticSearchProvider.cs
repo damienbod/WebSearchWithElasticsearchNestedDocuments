@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Nest;
+using System.Linq;
+using ElasticsearchCRUD.Model.SearchModel;
+using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD;
 
 namespace WebSearchWithElasticsearchNestedDocuments.Search
@@ -11,30 +13,28 @@ namespace WebSearchWithElasticsearchNestedDocuments.Search
 		private readonly IElasticsearchMappingResolver _elasticSearchMappingResolver = new ElasticsearchMappingResolver();
 
 		private static readonly Uri Node = new Uri(ConnectionString);
-		private static readonly ConnectionSettings Settings = new ConnectionSettings(Node, defaultIndex: "skillwithlistofdetailss");
-		readonly ElasticClient _client = new ElasticClient(Settings);
+
 
 		public IEnumerable<SkillWithListOfDetails> QueryString(string term)
 		{
+			var names = "";
 			if (term != null)
 			{
-				var names = term.Replace("+", " OR *");
-				var searchResults = _client.Search<SkillWithListOfDetails>(s => s
-					.From(0)
-					.Size(10)
-					.Query(q => q.QueryString(f => f.Query(names + "*")))
-					);
-
-				return searchResults.Documents;
+				names = term.Replace("+", " OR *");
 			}
 
-			var defaultResults = _client.Search<SkillWithListOfDetails>(s => s
-					.From(0)
-					.Size(10)
-					.Query(q => q.QueryString(f => f.Query("*")))
-					);
-
-			return defaultResults.Documents;
+			var search = new ElasticsearchCRUD.Model.SearchModel.Search
+			{
+				From= 0,
+				Size = 10,
+				Query = new Query(new QueryStringQuery(names + "*"))
+			};
+			IEnumerable<SkillWithListOfDetails> results;
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticSearchMappingResolver))
+			{
+				results = context.Search<SkillWithListOfDetails>(search).PayloadResult.Hits.HitsResult.Select(t => t.Source);
+			}
+			return results;
 		}
 
 		public void AddUpdateEntity(SkillWithListOfDetails skillWithListOfDetails)
